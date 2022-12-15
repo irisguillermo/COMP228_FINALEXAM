@@ -15,17 +15,10 @@ public class HelloController {
     private Label welcomeText;
 
     @FXML
- //   protected void onHelloButtonClick() {
-    //    welcomeText.setText("Welcome to JavaFX Application!");
-   // }
-//}
-
-    public void OnAddButton(ActionEvent actionEvent) throws SQLException, IOException {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 920, 480);
-        stage.setTitle("Player And Game");
-        stage.setScene(scene);
-        stage.show();
-    }
+  protected void onHelloButtonClick() {
+       welcomeText.setText("Welcome to JavaFX Application!");
+   }
 }
+
+
+

@@ -2,7 +2,6 @@ package com.example.finaltest2022;
 
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
-import javax.swing.*;
 import java.sql.*;
 
 public class DBUtil {
@@ -138,7 +137,7 @@ public static ResultSet query (String sql) throws SQLException
     return crs;
 }
 
-public static void addBook (String tableName, int book_id, String book_category, String book_title, int book_year, String book_author) throws  SQLException
+public static void addBook (String tableName, int book_id, String book_category, String book_title, String book_year, int book_author) throws  SQLException
 {
     dbConnect();
     try
@@ -165,8 +164,10 @@ public static void addBook (String tableName, int book_id, String book_category,
 public static  void main   (String [ ] args) throws SQLException
 {
     dbConnect();
- dbDisconnect();
+ //dbDisconnect();
+ createTable("Book");
 }
+
 
 
 }

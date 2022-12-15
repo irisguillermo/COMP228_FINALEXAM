@@ -21,6 +21,12 @@ public class Book {
         this.book_author = book_author;
     }
 
+    public Book(int book_id, String book_author) {
+    }
+
+    public Book(int book_id, String book_author, String book_title, String book_category, int p_year) {
+    }
+
     public int getBook_ID() {
         return book_ID;
     }
@@ -59,5 +65,8 @@ public class Book {
 
     public void setBook_author(String book_author) {
         this.book_author = book_author;
+    }
+
+    public void add(Book book) {
     }
 }

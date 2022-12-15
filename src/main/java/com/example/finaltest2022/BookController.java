@@ -1,88 +1,82 @@
 package com.example.finaltest2022;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.sql.*;
+
 import static java.lang.Integer.parseInt;
 
 public class BookController {
 
+    @FXML
+    private TableView table;
+    @FXML
     public Button addBook_Brn;
+
+    @FXML
     public Button filter_btn;
 
+    @FXML
     public Button delete_btn;
 
+    @FXML
     public TextField bookID_txtFld, BookTitle_txtFld, Author_txtFld, Category_txtFld, Year_txtFld;
 
+    @FXML
+    private TableColumn bookID_col, bookTitle_col, category_col, year_col, author_col;
+
+    @FXML
     private String message;
-    public void OnFilterButton(ActionEvent actionEvent) {
+
+    public void OnFilterButton(ActionEvent actionEvent) throws SQLException {
+        DBUtil.query("SELECT * Book");
+        populateData();
+    }
+    public void OnAddButton(ActionEvent actionEvent) throws SQLException {
+        DBUtil.addBook("Book", parseInt(bookID_txtFld.getText()), BookTitle_txtFld.getText(), Author_txtFld.getText(), Category_txtFld.getText(), parseInt(Year_txtFld.getText()));
+        populateData();
+    }
+    public void OnDeleteButton(ActionEvent actionEvent) throws SQLException {
+        Book book = (Book) table.getSelectionModel().getSelectedItem();
+        DBUtil.deleteData("Book", book.getBook_ID());
+        populateData();
+
     }
 
-    public void OnDeleteButton(ActionEvent actionEvent) {
-    }
+    private void populateData() throws SQLException {
+        ResultSet rs = DBUtil.query("SELECT * FROM Book");
 
-public void OnAddButton(ActionEvent actionEvent) throws SQLException
-    {
-        Connection connection = null;
-        PreparedStatement statement = null;
+        ObservableList <Book> books = FXCollections.observableArrayList();
 
-        try
+        while (rs.next())
         {
-            connection = DBUtil.dbConnect();
-            connection.setAutoCommit(false);
+            Book book = new Book(rs.getInt("book_ID"), rs.getString("book_author"), rs.getString("book_title"), rs.getString("book_category"), rs.getInt("p_year"));
+            book.add(book);
+        }
+        bookID_col.setCellValueFactory(new PropertyValueFactory("book_id"));
+        author_col.setCellValueFactory(new  PropertyValueFactory("book_author"));
+        bookTitle_col.setCellValueFactory(new PropertyValueFactory("book_title"));
+        category_col.setCellValueFactory(new PropertyValueFactory("book_category"));
+        year_col.setCellValueFactory(new PropertyValueFactory("p_year"));
 
-            String query = "{CALL Book (?, ? , ? , ?, ?)}";
-            statement = connection.prepareCall(query);
-            statement = connection.prepareStatement(query);
-            statement.setInt(1, parseInt(bookID_txtFld.getText()));
-            statement.setString(2,BookTitle_txtFld.getText());
-            statement.setString(3, Author_txtFld.getText());
-            statement.setString(4, Category_txtFld.getText());
-            statement.setInt(5,parseInt(Year_txtFld.getText()));
-            int count = statement.executeUpdate();
-            if (count == 1)
-            {
-                this.alert("Success", "New book item has been added", Alert.AlertType.INFORMATION);
-            }
-            else
-            {
-                this.alert("Failure", "Book item can not be added", Alert.AlertType.ERROR);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally {
-            if (null != statement)
-            {
-                try
-                {
-                    statement.close();
-                }
-                catch (SQLException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            if (null != connection)
-            {
-                try
-                {
-                    connection.close();
-                }
-                catch (SQLException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
+
+        table.getItems().clear();
+
+        table.getItems().addAll(books);
     }
 
-    private void alert(String title, String message, Alert.AlertType alertType) {
-    }
+
+
+
+
+
+
+
 }
